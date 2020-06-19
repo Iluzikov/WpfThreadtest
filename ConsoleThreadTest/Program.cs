@@ -47,8 +47,11 @@ namespace ConsoleThreadTest
         static void Main(string[] args)
         {
 
-            Parallel.For(0, 3, PrintEnum);
 
+            #region PrintEnum
+
+            Parallel.For(0, 3, PrintEnum);
+            #endregion
 
             #region PrintNumber
 
