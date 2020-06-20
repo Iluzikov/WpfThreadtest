@@ -14,38 +14,46 @@ namespace ConsoleThreadTest
     class Program
     {
         /// <summary>
-        /// Считает Факториал числа
+        ///  а. Считает Факториал числа n
         /// </summary>
         /// <param name="number"></param>
-        static void GetFactorial(object obj)
+        static void GetFactorial(long n)
         {
-            if(obj is int number)
+            long factorial = 1;
+            for (long i = 1; i <= n; i++)
             {
-                int factorial = 1;
-                for (int i = 1; i < number; i++)
-                {
-                    factorial *= i;
-                    if (i == number)
-                        Console.Write($"{i} ");
-                    else
-                        Console.Write($"{i} * ");
-                }
-                Console.Write($" = {factorial}");
+                factorial *= i;
+                if (i == n)
+                    Console.Write($"{i} ");
+                else
+                    Console.Write($"{i} * ");
             }
+            Console.Write($"Факториал = {factorial}\n");
+            
+        }
+
+        /// <summary>
+        /// Вычисляет сумму целыъ чисел
+        /// </summary>
+        /// <param name="n"></param>
+        static void GetSumIntNumber(long n)
+        {
+            var res = (n * (n + 1)) / 2;
+            Console.WriteLine($"Сумма целых чисел = {res}");
         }
 
         static void Main(string[] args)
         {
+            Console.Write("Введите число: ");
+            long num = long.Parse(Console.ReadLine());
 
-            Console.WriteLine("Введите число: ");
-            int number = int.Parse(Console.ReadLine());
-            Thread thread = new Thread(new ParameterizedThreadStart(GetFactorial));
-            thread.Start(number);
+            Parallel.Invoke(
+                () => GetFactorial(num),
+                () => GetSumIntNumber(num));
 
-            MessageBox.Show($"Откиньтесь на спинку кресла и наслаждайтесь подсчётом\n факториала числа: {number}");
-
-
-            Console.WriteLine("___________________________________________");
+            MessageBox.Show($"Откиньтесь на спинку кресла и наслаждайтесь...");
+            
+            Console.WriteLine("\n___________________________________________");
             Console.ReadLine();
         }
     }
