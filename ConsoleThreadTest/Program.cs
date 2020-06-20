@@ -1,9 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+
+// Написать приложение, считающее в раздельных потоках:
+//  a. факториал числа N, которое вводится с клавиатуры;
+//  b. сумму целых чисел до N.
+//
+// Лузиков Иван
 
 namespace ConsoleThreadTest
 {
@@ -46,6 +49,8 @@ namespace ConsoleThreadTest
 
         static void Main(string[] args)
         {
+
+
 
 
             #region PrintEnum
