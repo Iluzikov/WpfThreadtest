@@ -50,12 +50,22 @@ namespace ConsoleThreadTest
         static void Main(string[] args)
         {
 
-
-
+            Console.WriteLine("Введите число: ");
+            int number = int.Parse(Console.ReadLine());
+            int factorial = 1;
+            for (int i = 1; i < number; i++)
+            {
+                factorial *= i;
+                if(i==number)
+                    Console.Write($"{i} ");
+                else
+                    Console.Write($"{i} * ");
+            }
+            Console.Write($" = {factorial}");
 
             #region PrintEnum
 
-            Parallel.For(0, 3, PrintEnum);
+            //Parallel.For(0, 3, PrintEnum);
             #endregion
 
             #region PrintNumber
