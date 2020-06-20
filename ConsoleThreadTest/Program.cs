@@ -1,81 +1,59 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
+
+// Написать приложение, считающее в раздельных потоках:
+//  a. факториал числа N, которое вводится с клавиатуры;
+//  b. сумму целых чисел до N.
+//
+// Лузиков Иван
 
 namespace ConsoleThreadTest
 {
     class Program
     {
-        static void ThreadMethod()
+        /// <summary>
+        ///  а. Считает Факториал числа n
+        /// </summary>
+        /// <param name="number"></param>
+        static void GetFactorial(long n)
         {
-            Thread.Sleep(5000);
-            Console.WriteLine($"{Thread.CurrentThread.Name} - is ended");
-        }
-
-        static double MakeWork(int number)
-        {
-            double a = 1;
-
-            for (int i = 0; i < 100000; i++)
-                for (int j = 0; j < 10; j++)
-                    a /= 1.01;
-            Console.WriteLine(number);
-            return a;
-        }
-
-        static void PrintNumber(int number)
-        {
-            double a = 1;
-
-            for (int i = 0; i < 100000; i++)
-                for (int j = 0; j < 50; j++)
-                    a /= 1.01;
-            Console.WriteLine(number);
-        }
-
-        static void PrintEnum(int n)
-        {
-            for (int i = 0; i < 10; i++)
+            long factorial = 1;
+            for (long i = 1; i <= n; i++)
             {
-                Console.WriteLine(n + " " + i);
+                factorial *= i;
+                if (i == n)
+                    Console.Write($"{i} ");
+                else
+                    Console.Write($"{i} * ");
             }
+            Console.Write($"Факториал = {factorial}\n");
+            
+        }
+
+        /// <summary>
+        /// Вычисляет сумму целыъ чисел
+        /// </summary>
+        /// <param name="n"></param>
+        static void GetSumIntNumber(long n)
+        {
+            var res = (n * (n + 1)) / 2;
+            Console.WriteLine($"Сумма целых чисел = {res}");
         }
 
         static void Main(string[] args)
         {
+            Console.Write("Введите число: ");
+            long num = long.Parse(Console.ReadLine());
 
-            Parallel.For(0, 3, PrintEnum);
+            Parallel.Invoke(
+                () => GetFactorial(num),
+                () => GetSumIntNumber(num));
 
-
-            #region PrintNumber
-
-            //Parallel.For(0, 10, PrintNumber);
-            #endregion
-
-            #region MakeWork
-
-            //var func = new Func<int, double>(MakeWork);
-            //var result = func.BeginInvoke(1, null, null);
-            //while (!result.IsCompleted)
-            //    Console.Write(".");
-            //var returnedValue = func.EndInvoke(result);
-            //Console.WriteLine(returnedValue);
-            #endregion
-
-            #region ThreadMethod
-
-            //Thread thread = new Thread(new ThreadStart(ThreadMethod));
-            //thread.Name = "Second thread";
-            //thread.Start();
-            //Console.WriteLine("Waiting for thread end");
-            //ThreadMethod();
-            #endregion
-
-
-            Console.WriteLine("___________________________________________");
+            MessageBox.Show($"Откиньтесь на спинку кресла и наслаждайтесь...");
+            
+            Console.WriteLine("\n___________________________________________");
             Console.ReadLine();
         }
     }
