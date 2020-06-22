@@ -9,6 +9,41 @@ namespace ConsoleThreadTest
 {
     class Program
     {
+        const int size = 10000;
+        /// <summary>
+        /// Заполняет двумерный массив
+        /// </summary>
+        /// <param name="arr"></param>
+        static void FillArray(int[,] arr)
+        {
+            Random r = new Random();
+
+            for (int i = 0; i < size; i++)
+            {
+                for (int j = 0; j < size; j++)
+                {
+                    arr[i, j] = r.Next(0, 10);
+                }
+            }
+            Console.WriteLine("Done!");
+        }
+
+        static int[,] MultiplyMatrix(int[,] m1, int[,] m2)
+        {
+            int[,] result = new int[size, size];
+            for (int i = 0; i < size; i++)
+            {
+                for (int j = 0; j < size; j++)
+                {
+                    result[i, j] = m1[i, j] * m2[i, j];
+                }
+            }
+            return result;
+        }
+
+
+
+
         static void ThreadMethod()
         {
             Thread.Sleep(5000);
@@ -46,8 +81,29 @@ namespace ConsoleThreadTest
 
         static void Main(string[] args)
         {
+            int[,] matrix1 = new int[size, size];
+            int[,] matrix2 = new int[size, size];
 
-            Parallel.For(0, 3, PrintEnum);
+            Parallel.Invoke(
+                () => FillArray(matrix1),
+                () => FillArray(matrix2)
+                );
+
+            //FillArray(matrix1);
+            //FillArray(matrix2);
+
+            Console.Write(matrix1[1, 1]);
+            Console.Write(" * ");
+            Console.Write(matrix2[1, 1]);
+
+            int[,] matrixMult = MultiplyMatrix(matrix1, matrix2);
+            Console.Write(" = ");
+            Console.WriteLine(matrixMult[1, 1]);
+
+
+
+
+            //Parallel.For(0, 3, PrintEnum);
 
 
             #region PrintNumber
