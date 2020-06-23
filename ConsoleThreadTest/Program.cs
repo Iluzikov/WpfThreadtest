@@ -6,6 +6,7 @@ namespace ConsoleThreadTest
     class Program
     {
         const int size = 100;
+        static int[,] result;
 
         /// <summary>
         /// Заполняет двумерный массив
@@ -25,31 +26,40 @@ namespace ConsoleThreadTest
             Console.WriteLine("Массив заполнен!");
         }
 
-        static int[,] MultiplyMatrix(int[,] m1, int[,] m2)
+        /// <summary>
+        /// Умножение матриц
+        /// </summary>
+        /// <param name="m1"></param>
+        /// <param name="m2"></param>
+        /// <returns></returns>
+        static void MultiplyMatrix(int[,] m1, int[,] m2)
         {
-            int[,] result = new int[size, size];
-
             for (int i = 0; i < size; i++)
             {
                 for (int j = 0; j < size; j++)
                 {
-                    result[i, j] = 0;
-
-                    for (int k = 0; k < size; k++)
-                    {
-                        result[i, j] += m1[i, k] * m2[k, j];
-                    }
+                    Task t = new Task(() => MakeResult(i, j, m1, m2));
+                    t.RunSynchronously();
                 }
             }
-            return result;
         }
 
+        static void MakeResult(int i, int j, int[,] m1, int[,] m2)
+        {
+            result[i, j] = 0;
+
+            for (int k = 0; k < size; k++)
+            {
+                result[i, j] += m1[i, k] * m2[k, j];
+            }
+        }
 
 
         static void Main(string[] args)
         {
             int[,] matrix1 = new int[size, size];
             int[,] matrix2 = new int[size, size];
+            result = new int[size, size];
 
             Parallel.Invoke(
                 () => FillArray(matrix1),
@@ -57,7 +67,7 @@ namespace ConsoleThreadTest
                 );
 
 
-            int[,] matrixMult = MultiplyMatrix(matrix1, matrix2);
+            MultiplyMatrix(matrix1, matrix2);
 
             Console.WriteLine("Матрицы перемножены!");
 
