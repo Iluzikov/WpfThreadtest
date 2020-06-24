@@ -1,79 +1,75 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace ConsoleThreadTest
 {
     class Program
     {
-        static void ThreadMethod()
+        const int size = 100;
+        static int[,] result;
+
+        /// <summary>
+        /// Заполняет двумерный массив
+        /// </summary>
+        /// <param name="arr"></param>
+        static void FillArray(int[,] arr)
         {
-            Thread.Sleep(5000);
-            Console.WriteLine($"{Thread.CurrentThread.Name} - is ended");
-        }
+            Random r = new Random();
 
-        static double MakeWork(int number)
-        {
-            double a = 1;
-
-            for (int i = 0; i < 100000; i++)
-                for (int j = 0; j < 10; j++)
-                    a /= 1.01;
-            Console.WriteLine(number);
-            return a;
-        }
-
-        static void PrintNumber(int number)
-        {
-            double a = 1;
-
-            for (int i = 0; i < 100000; i++)
-                for (int j = 0; j < 50; j++)
-                    a /= 1.01;
-            Console.WriteLine(number);
-        }
-
-        static void PrintEnum(int n)
-        {
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < size; i++)
             {
-                Console.WriteLine(n + " " + i);
+                for (int j = 0; j < size; j++)
+                {
+                    arr[i, j] = r.Next(0, 10);
+                }
+            }
+            Console.WriteLine("Массив заполнен!");
+        }
+
+        /// <summary>
+        /// Умножение матриц
+        /// </summary>
+        /// <param name="m1"></param>
+        /// <param name="m2"></param>
+        /// <returns></returns>
+        static void MultiplyMatrix(int[,] m1, int[,] m2)
+        {
+            for (int i = 0; i < size; i++)
+            {
+                for (int j = 0; j < size; j++)
+                {
+                    Task t = new Task(() => MakeResult(i, j, m1, m2));
+                    t.RunSynchronously();
+                }
             }
         }
 
+        static void MakeResult(int i, int j, int[,] m1, int[,] m2)
+        {
+            result[i, j] = 0;
+
+            for (int k = 0; k < size; k++)
+            {
+                result[i, j] += m1[i, k] * m2[k, j];
+            }
+        }
+
+
         static void Main(string[] args)
         {
+            int[,] matrix1 = new int[size, size];
+            int[,] matrix2 = new int[size, size];
+            result = new int[size, size];
 
-            Parallel.For(0, 3, PrintEnum);
+            Parallel.Invoke(
+                () => FillArray(matrix1),
+                () => FillArray(matrix2)
+                );
 
 
-            #region PrintNumber
+            MultiplyMatrix(matrix1, matrix2);
 
-            //Parallel.For(0, 10, PrintNumber);
-            #endregion
-
-            #region MakeWork
-
-            //var func = new Func<int, double>(MakeWork);
-            //var result = func.BeginInvoke(1, null, null);
-            //while (!result.IsCompleted)
-            //    Console.Write(".");
-            //var returnedValue = func.EndInvoke(result);
-            //Console.WriteLine(returnedValue);
-            #endregion
-
-            #region ThreadMethod
-
-            //Thread thread = new Thread(new ThreadStart(ThreadMethod));
-            //thread.Name = "Second thread";
-            //thread.Start();
-            //Console.WriteLine("Waiting for thread end");
-            //ThreadMethod();
-            #endregion
-
+            Console.WriteLine("Матрицы перемножены!");
 
             Console.WriteLine("___________________________________________");
             Console.ReadLine();
